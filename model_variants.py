@@ -3,7 +3,7 @@ from torchsummary import summary
 
 vit_small = model.ViT(image_size=224,
                      patch_size=16,
-                     layer_n=10,
+                     layer_n=6,
                      embd_d=512,
                      ffn_dim=2048,
                      head_n=8,

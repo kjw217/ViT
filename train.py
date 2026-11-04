@@ -71,11 +71,13 @@ def train(model:nn.Module, epochs, batch_size, base_lr, optimizer_name, device="
                 pred = model(image)
                 loss = F.cross_entropy(pred, label, label_smoothing=0.1)
             gradscaler.scale(loss).backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1)
 
             gradscaler.step(optimizer)
             gradscaler.update()
             scheduler.step()
 
+            print(loss.item())
             epoch_loss += loss.item()
             iter_loss += loss.item()
             if i % 1000 == 999 :
@@ -103,4 +105,4 @@ def train(model:nn.Module, epochs, batch_size, base_lr, optimizer_name, device="
 if __name__ == "__main__" :
     from model_variants import vit_small
     
-    train(model=vit_small, epochs=1, batch_size=12, base_lr=1e-3, optimizer_name="AdamW")
+    train(model=vit_small, epochs=1, batch_size=12, base_lr=3e-3, optimizer_name="AdamW")

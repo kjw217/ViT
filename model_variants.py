@@ -17,7 +17,7 @@ vit_base = model.ViT(image_size=224,
                      embd_d=768,
                      ffn_dim=3072,
                      head_n=12,
-                     cls_n=21841,
+                     cls_n=1000,
                      attn_dropout=0.1)
 
 vit_large = model.ViT(image_size=224, 
@@ -26,7 +26,7 @@ vit_large = model.ViT(image_size=224,
                      embd_d=1024,
                      ffn_dim=4096,
                      head_n=16,     
-                     cls_n=21841,
+                     cls_n=1000,
                      attn_dropout=0.1)
 
 if __name__ == "__main__" :

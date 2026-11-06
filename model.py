@@ -11,7 +11,7 @@ class mlp_block(nn.Module) :
         self.ffnA = nn.Linear(embd_dim, ffn_dim)
         self.ffnB = nn.Linear(ffn_dim, embd_dim)
     def forward(self, x) :
-        output = F.gelu(self.ffnB(self.ffnA(x)))
+        output = self.ffnB(F.gelu(self.ffnA(x)))
         return output
 
 class MultiheadSelfAttention(nn.Module) :
@@ -102,14 +102,14 @@ class ViT(nn.Module) :
             x.unsqueeze(0)
         b, c, h, w = x.shape
         patch_tokens = self.p_embedding(x) # b, d, h/p, w/p
-        tokens = torch.cat((self.cls_token.repeat(b, 1, 1), patch_tokens.reshape(b, (h//self.patch_size)**2, self.embd_d)), dim=1)
+        tokens = torch.cat((self.cls_token.repeat(b, 1, 1), patch_tokens.flatten(2).transpose(1, 2)), dim=1)
         tokens = tokens + self.positional_embed
 
         
         for layer in self.transformer_encoder :
-            attn_output = layer(tokens)
+            tokens = layer(tokens)
 
-        output = self.ln(attn_output[:, 0, :].squeeze())
+        output = self.ln(tokens[:, 0, :].squeeze())
         output = self.mlp_head(output)
         
         return output
